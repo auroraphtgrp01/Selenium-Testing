@@ -2,9 +2,9 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useToast } from "@/components/ui/use-toast"
-import { getAllUsers, registerUser } from '../(functionHandler)/function';
+import { checkUniqueEmail, registerUser } from '../(functionHandler)/function';
 
 export default function Page() {
   const [formData, setFormData] = useState({
@@ -17,11 +17,6 @@ export default function Page() {
 
   const [error, setError] = useState('')
   const { toast } = useToast()
-
-  useEffect(() => {
-    console.log(getAllUsers());
-    
-  })
 
   const handleChange = (e: any) => {
     setFormData({
@@ -40,40 +35,51 @@ export default function Page() {
     return re.test(phoneNumber)
   }
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault()
     const { fullname, phoneNumber, email, password, confirmPassword } = formData
 
     if (!validatePhoneNumber(phoneNumber)) {
-      setError('Số điện thoại không hợp lệ')
+      setError('Invalid phone number')
       toast({
-        title: "Validation Error !",
-        description: "Số điện thoại không hợp lệ - Vui lòng thử lại.",
+        title: "Validation Error!",
+        description: "Invalid phone number - Please try again.",
         variant: "destructive",
       })
       return
     }
 
     if (!validateEmail(email)) {
-      setError('Email không hợp lệ')
+      setError('Invalid email')
       toast({
-        title: "Validation Error !",
-        description: "Email không hợp lệ - Vui lòng thử lại.",
+        title: "Validation Error!",
+        description: "Invalid email - Please try again.",
         variant: "destructive",
       })
       return
     }
 
     if (password !== confirmPassword) {
-      setError('Mật khẩu không khớp')
+      setError('Passwords do not match')
       toast({
-        title: "Validation Error !",
-        description: "Mật khẩu không khớp - Vui lòng thử lại.",
+        title: "Validation Error!",
+        description: "Passwords do not match - Please try again.",
         variant: "destructive",
       })
       return
     }
-
+    
+    const isUnique = (await checkUniqueEmail(email))?.status
+    if (!isUnique) {
+      setError('Email already exists')
+      toast({
+        title: "Validation Error!",
+        description: "Email already exists - Please try again.",
+        variant: "destructive",
+      })
+      return
+    }
+    
     setError('')
     const result = {
       fullname,
@@ -81,14 +87,12 @@ export default function Page() {
       email,
       password
     }
-    console.log(result)
-    registerUser(result)
+    await registerUser(result)
     toast({
-      title: "Success !",
-      description: "Đăng ký tài khoản thành công.",
+      title: "Success!",
+      description: "Account registered successfully.",
       variant: "success",
     })
-    
   }
 
   return (
@@ -96,12 +100,12 @@ export default function Page() {
       <div className="w-full max-w-md space-y-6 rounded-lg bg-white p-6 shadow-lg dark:bg-gray-900">
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-bold">Register</h1>
-          <p className="text-gray-500 dark:text-gray-400">Tạo tài khoản để bắt đầu.</p>
+          <p className="text-gray-500 dark:text-gray-400">Create an account to get started.</p>
         </div>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Tên</Label>
+              <Label htmlFor="name">Name</Label>
               <Input 
                 id="name" 
                 name='fullname' 
@@ -112,7 +116,7 @@ export default function Page() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Số điện thoại</Label>
+              <Label htmlFor="phone">Phone Number</Label>
               <Input 
                 id="phone" 
                 type="tel" 
@@ -137,7 +141,7 @@ export default function Page() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Mật khẩu</Label>
+            <Label htmlFor="password">Password</Label>
             <Input 
               id="password" 
               type="password" 
@@ -148,7 +152,7 @@ export default function Page() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirm-password">Xác nhận mật khẩu</Label>
+            <Label htmlFor="confirm-password">Confirm Password</Label>
             <Input 
               id="confirm-password" 
               type="password" 
@@ -160,7 +164,7 @@ export default function Page() {
           </div>
           {error && <p className="text-red-500">{error}</p>}
           <Button type="submit" className="w-full">
-            Đăng ký
+            Register
           </Button>
         </form>
       </div>

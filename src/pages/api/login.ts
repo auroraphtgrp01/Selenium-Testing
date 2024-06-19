@@ -34,6 +34,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         } catch (error) {
             res.status(500).json({ error: 'Lỗi server' })
         }
+    } else if (req.method === 'GET') {
+        const { email } = req.query
+
+        try {
+            const user = await prisma.user.findFirst({
+                where: { email: email as string }
+            })
+
+            if (!user) {
+                res.status(404).json({ error: 'Người dùng không tồn tại' })
+                return
+            }
+
+            res.status(200).json({
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                phoneNumber: user.phoneNumber,
+            })
+        } catch (error) {
+            res.status(500).json({ error: 'Lỗi server' })
+        }
     } else {
         res.status(405).json({ error: 'Method not allowed' })
     }

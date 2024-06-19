@@ -44,7 +44,7 @@ export default function page() {
         <TableCaption>A list of test case</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">#</TableHead>
+            <TableHead className="">#</TableHead>
             <TableHead>Case</TableHead>
             <TableHead>Action</TableHead>
             <TableHead>Result</TableHead>
@@ -53,7 +53,7 @@ export default function page() {
         <TableBody>
             {testCase.map((item, index) => (
                 <TableRow key={index}>
-            <TableCell className="font-medium">1</TableCell>
+            <TableCell className="font-medium">{index +1}</TableCell>
             <TableCell>{item.name}</TableCell>
             <TableCell>
                 <Button variant={'destructive'} onClick={() => {
