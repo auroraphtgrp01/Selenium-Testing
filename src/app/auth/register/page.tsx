@@ -69,8 +69,10 @@ export default function Page() {
       return
     }
     
-    const isUnique = (await checkUniqueEmail(email))?.status
-    if (!isUnique) {
+    const isUnique = (await checkUniqueEmail(email)).status
+    console.log('isUnique:', isUnique);
+    
+    if (isUnique) {
       setError('Email already exists')
       toast({
         title: "Validation Error!",

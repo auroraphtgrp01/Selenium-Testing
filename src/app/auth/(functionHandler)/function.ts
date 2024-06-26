@@ -92,24 +92,15 @@ export const callTest = async (item: any) => {
 
 export const checkUniqueEmail = async (email: string) => {
     try {
-        const response = await fetch('/api/login', {
+        const response = await fetch(`/api/login?email=${email}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             }
         })
         const data = await response.json()
-        if (response.ok) {
-            return {
-                status: true,
-                data
-            }
-        } else {
-            return {
-                status: false,
-                data
-            }
-        }
+        return data
+
     } catch (error) {
         console.error('Lỗi khi gọi API kiểm tra email:', error)
         return null

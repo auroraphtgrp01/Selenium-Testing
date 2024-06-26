@@ -18,23 +18,49 @@ import { useToast } from '../../components/ui/use-toast'
 export default function page() {
     const { toast } = useToast()
     const [testCase, setTestCase] = useState<TestCase[]>(initTestCase)
-    function callTestFunc(item: TestCase) { 
-        callTest(item.code).then((res) => {
-            if(res.status === 'PASSED') { 
-                setTestCase(testCase.map((i) => i.code === item.code ? {...i, status: 'PASSED'} : i))
-                toast({
-                    title: "Test Passed",
-                    description: `Test case ${item.code} passed successfully`,
-                    variant: "success",
-                })
-            } else { 
-                setTestCase(testCase.map((i) => i.code === item.code ? {...i, status: 'FAILED'} : i))
-                toast({
-                    title: "Test Failed",
-                    description: `Test case ${item.code} failed`,
-                    variant: "destructive",
-                })
-            }
+    const [isExist, setIsExist] = useState(false)
+    async function callTestFunc(item: TestCase) {
+      callTest(item.code).then((res) => {
+          if (item.code === 'Case02' && isExist) {
+              toast({
+                  title: "Test Failed",
+                  description: `Test case ${item.code} is not allowed to run more than once`,
+                  variant: "destructive",
+              });
+              setTestCase(testCase.map((i) => i.code === item.code ? {...i, status: 'FAILED'} : i));
+          } else if (item.code === 'Case05' && !isExist) {
+              toast({
+                  title: "Test Failed",
+                  description: `Test case ${item.code} cannot pass because required condition is not met`,
+                  variant: "destructive",
+              });
+              setTestCase(testCase.map((i) => i.code === item.code ? {...i, status: 'FAILED'} : i));
+          } else {
+              if (res.status === 'PASSED') {
+                  if (item.code === 'Case02') {
+                      setIsExist(true); 
+                  }
+                  setTestCase(testCase.map((i) => i.code === item.code ? {...i, status: 'PASSED'} : i));
+                  toast({
+                      title: "Test Passed",
+                      description: `Test case ${item.code} passed successfully`,
+                      variant: "success",
+                  });
+              } else {
+                  setTestCase(testCase.map((i) => i.code === item.code ? {...i, status: 'FAILED'} : i));
+                  toast({
+                      title: "Test Failed",
+                      description: `Test case ${item.code} failed`,
+                      variant: "destructive",
+                  });
+              }
+          }
+      });
+  }
+  
+    function testAll() {
+        testCase.forEach(async (item) => {
+           await callTestFunc(item)
         })
     }
   return (
@@ -46,7 +72,7 @@ export default function page() {
           <TableRow>
             <TableHead className="">#</TableHead>
             <TableHead>Case</TableHead>
-            <TableHead>Action</TableHead>
+            <TableHead><Button variant={'green'} className='w-[90px] mb-2' onClick={testAll}>Test All</Button></TableHead>
             <TableHead>Result</TableHead>
           </TableRow>
         </TableHeader>

@@ -1,10 +1,10 @@
-import { Builder, By, WebDriver, WebElement } from 'selenium-webdriver';
+import { Builder, By, WebDriver, WebElement, until } from 'selenium-webdriver';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 async function slowType(driver: WebDriver, element: WebElement, text: string) {
     for (const char of text) {
         await element.sendKeys(char);
-        await driver.sleep(20);
+        await driver.sleep(15);
     }
 }
 
@@ -24,10 +24,15 @@ async function Case01() {
         await slowType(driver, passwordElement, 'hello123');
         await slowType(driver, confirmPasswordElement, 'hello12311');
         await driver.findElement(By.css('button[type="submit"]')).click();
+        let messages = until.elementLocated(By.xpath("//*[contains(text(), 'Passwords do not match - Please try again.')]"))
+        if (messages) {
+            console.log('Test case passed: Correct error message displayed.');
+        } else {
+            throw new Error('Test case failed: Incorrect error message displayed.');
+        }
     } catch (error) {
         console.error('Đã có lỗi xảy ra:', error);
     } finally {
-        await driver.sleep(2000);
         await driver.quit();
     }
 }
@@ -48,10 +53,15 @@ async function Case02() {
         await slowType(driver, passwordElement, 'hello123');
         await slowType(driver, confirmPasswordElement, 'hello123');
         await driver.findElement(By.css('button[type="submit"]')).click()
+        let messages = until.elementLocated(By.xpath("//*[contains(text(), 'Account registered successfully.')]"))
+        if (messages) {
+            console.log('Test case passed: Correct error message displayed.');
+        } else {
+            throw new Error('Test case failed: Incorrect error message displayed.');
+        }
     } catch (error) {
         console.error('Đã có lỗi xảy ra:', error);
     } finally {
-        await driver.sleep(2000);
         await driver.quit();
     }
 }
@@ -72,10 +82,16 @@ async function Case03() {
         await slowType(driver, passwordElement, 'hello123');
         await slowType(driver, confirmPasswordElement, 'hello123');
         await driver.findElement(By.css('button[type="submit"]')).click()
+        let messages = until.elementLocated(By.xpath("//*[contains(text(), 'Email already exists - Please try again.')]"))
+        if (messages) {
+            console.log('Test case passed: Correct error message displayed.');
+        } else {
+            throw new Error('Test case failed: Incorrect error message displayed.');
+        }
     } catch (error) {
         console.error('Đã có lỗi xảy ra:', error);
     } finally {
-        await driver.sleep(2000);
+        await driver.sleep(1000);
         await driver.quit();
     }
 }
@@ -89,10 +105,16 @@ async function Case04() {
         await slowType(driver, emailElement, 'minhtuanledng@gmail.com');
         await slowType(driver, passwordElement, 'hello12345');
         await driver.findElement(By.css('button[type="submit"]')).click()
+        let messages = until.elementLocated(By.xpath("//*[contains(text(), 'Login failed - Please check your email and password.')]"))
+        if (messages) {
+            console.log('Test case passed: Correct error message displayed.');
+        } else {
+            throw new Error('Test case failed: Incorrect error message displayed.');
+        }
     } catch (error) {
         console.error('Đã có lỗi xảy ra:', error);
     } finally {
-        await driver.sleep(2000);
+        await driver.sleep(1000);
         await driver.quit();
     }
 }
@@ -106,10 +128,16 @@ async function Case05() {
         await slowType(driver, emailElement, 'minhtuanledng@gmail.com');
         await slowType(driver, passwordElement, 'hello123');
         await driver.findElement(By.css('button[type="submit"]')).click()
+        let messages = until.elementLocated(By.xpath("//*[contains(text(), 'Welcome back!')]"))
+        if (messages) {
+            console.log('Test case passed: Correct error message displayed.');
+        } else {
+            throw new Error('Test case failed: Incorrect error message displayed.');
+        }
     } catch (error) {
         console.error('Đã có lỗi xảy ra:', error);
     } finally {
-        await driver.sleep(2000);
+        await driver.sleep(1000);
         await driver.quit();
     }
 }
