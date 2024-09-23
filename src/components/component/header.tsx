@@ -5,6 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
+import { Laptop } from "lucide-react"
 
 export function Header() {
   const [userData, setUserData] = useState<any>()
@@ -18,15 +19,10 @@ export function Header() {
   return (
     <header className="flex items-center justify-between px-4 py-3 bg-background border-b">
       <div className="flex items-center gap-4">
-        <Link href="#" className="flex items-center" prefetch={false}>
-          <MountainIcon className="h-6 w-6" />
-          <span className="sr-only">Acme Inc</span>
+      <Link className="flex items-center justify-center" href="#">
+          <Laptop className="h-6 w-6" />
+          <span className="ml-2 text-lg font-bold">LaptopWorld</span>
         </Link>
-        <nav className="hidden md:flex items-center gap-4">
-          <Link href="/test" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
-            Test Case
-          </Link>
-        </nav>
       </div>
       <div className="flex items-center gap-4">
         {userData ? (
