@@ -19,7 +19,7 @@ export function Header() {
   return (
     <header className="flex items-center justify-between px-4 py-3 bg-background border-b">
       <div className="flex items-center gap-4">
-      <Link className="flex items-center justify-center" href="#">
+      <Link className="flex items-center justify-center" href="/">
           <Laptop className="h-6 w-6" />
           <span className="ml-2 text-lg font-bold">LaptopWorld</span>
         </Link>
@@ -59,6 +59,9 @@ export function Header() {
           </div>
         ) : (
           <div>
+             <Link href={'/contact'}>
+            <Button variant={'blue'} className="me-2">Contact</Button>
+            </Link>
             <Link href={'/auth/login'}>
             <Button variant={'green'}>Login</Button>
             </Link>
